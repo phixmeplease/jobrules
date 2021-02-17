@@ -2,6 +2,8 @@ jobrules = {}
 
 jobrules.title = "Job Rules"
 
+jobrules.reportTitle = "Report a player"
+
 jobrules.rules = {
     ["Citizen"] = {
         {

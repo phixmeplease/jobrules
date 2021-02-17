@@ -4,7 +4,7 @@ XeninUI:CreateFont("JobRules.RightSubTitle", 20, 500)
 
 local function open_job_rules()
     local frame = vgui.Create("XeninUI.Frame")
-    frame:SetSize(math.min(1000, ScrW()),math.min(500, ScrH()))
+    frame:SetSize(math.min(500, ScrW()),math.min(500, ScrH()))
     frame:Center()
     frame:MakePopup()
     frame:SetTitle(jobrules.title)
@@ -17,31 +17,9 @@ local function open_job_rules()
     accept:SetText("Close")
     accept:SetRoundness(6)
 
-    local left = frame:Add("Panel")
-    left:Dock(LEFT)
-    left:SetWide(frame:GetWide() / 2)
+    accept.DoClick = function() frame:Remove() end
 
-    local right = frame:Add("Panel")
-    right:Dock(LEFT)
-    right:SetWide(frame:GetWide() / 2)
-
-    local title = left:Add("DLabel")
-    title:SetText("New to this job?")
-    title:Dock(TOP)
-    title:SetFont("JobRules.RightTitle")
-    title:SetColor(color_white)
-    title:SetContentAlignment(5)
-    title:SizeToContentsY()
-
-    local sub = left:Add("DLabel")
-    sub:SetText("Check out the rules below!")
-    sub:Dock(TOP)
-    sub:SetFont("JobRules.RightSubTitle")
-    sub:SetColor(Color(200, 200, 200))
-    sub:SetContentAlignment(5)
-    sub:SizeToContentsY()
-
-    local scroll = left:Add("XeninUI.ScrollPanel")
+    local scroll = frame:Add("XeninUI.ScrollPanel")
     scroll:Dock(FILL)
     for k, v in ipairs(jobrules.rules[LocalPlayer():getJobTable().name] or {}) do
         local p = scroll:Add("DPanel")
@@ -72,25 +50,16 @@ local function open_job_rules()
         rule:SizeToContentsX(31)
         rule:SetContentAlignment(4)
     end
+end
 
-    -- RDM Panel stuff
-    local title = right:Add("DLabel")
-    title:SetText("Need to report someome?")
-    title:Dock(TOP)
-    title:SetFont("JobRules.RightTitle")
-    title:SetColor(color_white)
-    title:SetContentAlignment(5)
-    title:SizeToContentsY()
+local function open_report_menu()
+    local eframe = vgui.Create("XeninUI.Frame")
+    eframe:SetSize(math.min(500, ScrW()),math.min(500, ScrH()))
+    eframe:Center()
+    eframe:MakePopup()
+    eframe:SetTitle(jobrules.reportTitle)
 
-    local sub = right:Add("DLabel")
-    sub:SetText("Do so below!")
-    sub:Dock(TOP)
-    sub:SetFont("JobRules.RightSubTitle")
-    sub:SetColor(Color(200, 200, 200))
-    sub:SetContentAlignment(5)
-    sub:SizeToContentsY()
-
-    local scroll = right:Add("XeninUI.ScrollPanel")
+    local scroll = eframe:Add("XeninUI.ScrollPanel")
     scroll:Dock(FILL)
 
     for k, v in pairs(player.GetAll()) do
@@ -113,7 +82,7 @@ local function open_job_rules()
             draw.RoundedBox(6, 0, 0, w, h, XeninUI.Theme.Navbar)
             draw.SimpleText(name, "JobRules.Test", h, h / 2, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
-            draw.SimpleText("Click to report!", "JobRules.Test", w - h, h / 2, ColorAlpha(XeninUI.Theme.Orange, s.textAlpha), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+            draw.SimpleText("Click to report!", "JobRules.Test", w - h, h / 2, ColorAlpha(XeninUI.Theme.Green, s.textAlpha), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
         end
 
         p.DoClick = function()
@@ -158,6 +127,14 @@ concommand.Add("testjobrules", function()
     open_job_rules()
 end)
 
-net.Receive("JobRules.SendOpenRules", function()
+concommand.Add("testreportmenu", function()
+    open_report_menu()
+end)
 
+net.Receive("JobRules.SendOpenReport", function()
+    open_report_menu()
+end)
+
+net.Receive("JobRules.SendOpenRules", function()
+    open_job_rules()
 end)
