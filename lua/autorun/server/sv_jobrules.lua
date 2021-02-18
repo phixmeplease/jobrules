@@ -20,9 +20,11 @@ hook.Add("PlayerDeath", "JobRules", function(ply)
     net.Send(ply)
 end)
 
-hook.Add("PlayerSpawn", "JobRules", function(ply)
+hook.Add("OnPlayerChangedTeam", "JobRules", function(ply, _, to)
     if (ply:GetPData("jobrules_hasdisabled", false) == true) then return end
+    if (jobrules.rules[ply:getJobTable().name] == nil) then return end
     net.Start("JobRules.SendOpenRules")
+    net.WriteString(to)
     net.Send(ply)
     ply:ChatPrint("To hide this menu when you spawn, use /hidejobrules. To make it appear again do /allowjobrules")
 end)

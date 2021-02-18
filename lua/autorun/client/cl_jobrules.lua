@@ -2,7 +2,7 @@ XeninUI:CreateFont("JobRules.Test", 20, 500)
 XeninUI:CreateFont("JobRules.RightTitle", 25, 500)
 XeninUI:CreateFont("JobRules.RightSubTitle", 20, 500)
 
-local function open_job_rules()
+local function open_job_rules(job)
     local frame = vgui.Create("XeninUI.Frame")
     frame:SetSize(math.min(500, ScrW()),math.min(500, ScrH()))
     frame:Center()
@@ -21,7 +21,7 @@ local function open_job_rules()
 
     local scroll = frame:Add("XeninUI.ScrollPanel")
     scroll:Dock(FILL)
-    for k, v in ipairs(jobrules.rules[LocalPlayer():getJobTable().name] or {}) do
+    for k, v in ipairs(jobrules.rules[job] or {}) do
         local p = scroll:Add("DPanel")
         p:Dock(TOP)
         p:DockMargin(10, 10, 10, 0)
@@ -136,5 +136,6 @@ net.Receive("JobRules.SendOpenReport", function()
 end)
 
 net.Receive("JobRules.SendOpenRules", function()
-    open_job_rules()
+    local yes = net.ReadString()
+    open_job_rules(yes)
 end)
